@@ -4,6 +4,7 @@ import './App.css';
 
 function App() {
   const [isChecked, setIsChecked] = useState(false)
+  const [isAppend, setIsAppend] = useState(false)
   
   const readContent = () => {
     navigator.clipboard.readText().then((data) => {
@@ -12,12 +13,12 @@ function App() {
       data = data.split(',,')
       
       const getters = document.getElementById('getter').value
+      const toAppend = isAppend
       const getAnSetAPoner = getters === "1" ? ' {get;} \n' : getters === "2" ? ' {set;} \n' : ' {get; set;} \n'
       const selection = document.getElementById('select').value
-      console.log(selection)
       const privadoOPublico = selection === "1" ? 'public' : 'private'
       const text = document.getElementById('text-holder')
-      if(text.value) 
+      if(text.value && !toAppend) 
         text.value = ''
       for(let item of data){
         var newItem = ''
@@ -84,6 +85,10 @@ function App() {
     setIsChecked(e.target.checked)
   }
 
+  const handleAppend = (e) => {
+    setIsAppend(e.target.checked)
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -91,15 +96,26 @@ function App() {
         <h2>Classifier</h2>
         <textarea readOnly 
           id='text-holder'></textarea>
-        <h6 htmlFor='conversion'> 
-          <input 
-            id='conversion' 
-            type='checkbox'
-            checked={isChecked}
-            onChange={handleCheckbox}
+        <div className='box-checks'>
+          <h6 htmlFor='conversion'> 
+            <input 
+              id='conversion' 
+              type='checkbox'
+              checked={isChecked}
+              onChange={handleCheckbox}
+              />
+            Remover guiones
+          </h6>
+          <h6 htmlFor='append'>
+            <input 
+              id='append'
+              type='checkbox'
+              checked={isAppend}
+              onChange={handleAppend}
             />
-          Remover guiones
-        </h6>
+            Apendar al texto existente
+          </h6>
+        </div>
         <div className='type'>
           <h6>Tipo de clase:</h6>
           <select id='select'>
