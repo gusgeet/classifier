@@ -12,7 +12,7 @@ function App() {
       data = data.split(',,')
       
       const getters = document.getElementById('getter').value
-      const getAnSetAPoner = getters == 1 ? ' {get;} \n' : getters == 2 ? ' {set;} \n' : ' {get; set;} \n'
+      const getAnSetAPoner = getters === "1" ? ' {get;} \n' : getters === "2" ? ' {set;} \n' : ' {get; set;} \n'
       const selection = document.getElementById('select').value
       console.log(selection)
       const privadoOPublico = selection === "1" ? 'public' : 'private'
