@@ -4,31 +4,82 @@ import './App.css';
 
 function App() {
   const [isChecked, setIsChecked] = useState(false)
-  const [isShown, setIsShown] = useState(false)
-  const [textShortcut, setTextShortcut] = useState('')
-
+  
   const readContent = () => {
     navigator.clipboard.readText().then((data) => {
       data = data.replace(/[\r\n]/gm, '|')
       data = data.split('|').join()
       data = data.split(',,')
-      let newData = []
+      
+      const getters = document.getElementById('getter').value
+      console.log(getters)
+      const getAnSetAPoner = getters == 1 ? ' {get;} \n' : getters == 2 ? ' {set;} \n' : ' {get; set;} \n'
+      const selection = document.getElementById('select').value
+      const privadoOPublico = selection === 1 ? 'public' : 'private'
+      const text = document.getElementById('text-holder')
+      if(text.value) 
+        text.value = ''
       for(let item of data){
         var newItem = ''
-        if(isShown)
-          newItem = textShortcut + '.'
+        var newItem2 = ''
         if(item.includes('_') && isChecked){
-          newItem += item + ' as ' + item.replaceAll('_', '') 
+          newItem += item.replaceAll('_', '').replace('identity', '')
         } else {
           newItem += item
-        }      
-        newData.push(' ' + newItem)
+        }
+        newItem2 = newItem.replace('identity', '').split('\t')[1]
+        if(newItem2.includes('('))
+          newItem2 = newItem2.split('(')[0]
+        newItem = newItem.split('\t')[0]
+        
+        switch(newItem2) {
+          case 'int':
+            newItem = privadoOPublico + ' int ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'bigint':
+              newItem = privadoOPublico + ' Int64 ' + newItem + getAnSetAPoner
+              text.value += newItem
+              break;
+          case 'bit':
+            newItem = privadoOPublico + ' bool ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'date':
+            newItem = privadoOPublico + ' DateTime ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'varchar':
+            newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'image':
+            newItem = privadoOPublico + ' byte[] ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'decimal':
+            newItem = privadoOPublico + ' Decimal ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'int':
+            newItem = privadoOPublico + ' Int ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'text':
+            newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'nvarchar':
+            newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          case 'smallint':
+            newItem = privadoOPublico + ' Int ' + newItem + getAnSetAPoner
+            text.value += newItem
+            break;
+          
+        }
       }
-      newData = newData.join()
-      
-      const text = document.getElementById('text-holder')
-      text.value = 
-      text.value = '(' + newData.replace(' ', '') + ')'
     })
   }
 
@@ -36,28 +87,13 @@ function App() {
     setIsChecked(e.target.checked)
   }
 
-  const handleShown = (e) => {
-    setIsShown(e.target.checked)
-  }
-
-  const handleShortcut = (e) => {
-    setTextShortcut(e.target.value)
-  }
-
   return (
     <div className="App">
       <header className="App-header">
-        <h2>StringiFUCK</h2>
-        <h2>StringiFUCK</h2>
-        <textarea readOnly placeholder='Instrucciones:
-          Ir a SQL, ejecutar:
-          exec sp_columns [NOMBRE DE LA TABLA], entre comillas. Va a devolver la lista de columnas de la tabla especificada. Seleccionar los nombres de las celdas 
-          a utilizar en la query a hacer, copiarlas, y luego hacer click en el boton de abajo. Voy a generar la query que
-          se solicita en la parte del select, removiendo los guiones bajos de la tabla removidos por EF Core.
-          El fin de esta herramienta es simplemente hacer mas rapida la query que se manda, despues de mapear con EF Core las tablas, para despues pasar a Dapper para mandar queryes.
-          EF Core tiene la mala costumbre de remover los guiones bajos de las tablas, razon por la que para solicitar "Datos_Del_Empleado", hay que pedir "Datos_Del_Empleado as DatosDelEmpleado".
-          Esta herramienta genera esa estructura para las queryes que son Select. Una vez que se le de al boton de abajo, el resultado se vera en este campo de texto.
-        ' id='text-holder'></textarea>
+        <h2>Classifier</h2>
+        <h2>Classifier</h2>
+        <textarea readOnly 
+          id='text-holder'></textarea>
         <h6 htmlFor='conversion'> 
           <input 
             id='conversion' 
@@ -65,27 +101,23 @@ function App() {
             checked={isChecked}
             onChange={handleCheckbox}
             />
-          Hacer conversion EF Core ► Dapper (generar 'as' sin guiones bajos)
+          Remover guiones
         </h6>
-
-        <h6 htmlFor='shortcutTable'>
-          <input 
-            id='shown'
-            type='checkbox'
-            checked={isShown}
-            onChange={handleShown}
-          />
-          Agregar un atajo de referencia (fd = fd.Id, fd.User...) 
-        </h6>
-        <input 
-            id='shortcutTable'
-            type='text'
-            onChange={handleShortcut}
-            style={{
-              display: isShown ? 'block': 'none'
-            }}
-          />
-                
+        <div className='type'>
+          <h6>Tipo de clase:</h6>
+          <select id='select'>
+            <option value='0'>Private</option>
+            <option value='1'>Public</option>
+          </select>
+        </div>
+        <div className='type'>
+          <h6>Getter/Setter:</h6>
+          <select id='getter'>
+            <option value='0'>Ambos</option>
+            <option value='1'>Solo getter</option>
+            <option value='2'>Solo setter</option>
+          </select>
+        </div>
         <button onClick={readContent} className='btn'>Obtener datos de portapapeles</button>
       </header>
     </div>
