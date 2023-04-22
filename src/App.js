@@ -12,10 +12,10 @@ function App() {
       data = data.split(',,')
       
       const getters = document.getElementById('getter').value
-      console.log(getters)
       const getAnSetAPoner = getters == 1 ? ' {get;} \n' : getters == 2 ? ' {set;} \n' : ' {get; set;} \n'
       const selection = document.getElementById('select').value
-      const privadoOPublico = selection === 1 ? 'public' : 'private'
+      console.log(selection)
+      const privadoOPublico = selection === "1" ? 'public' : 'private'
       const text = document.getElementById('text-holder')
       if(text.value) 
         text.value = ''
@@ -61,10 +61,6 @@ function App() {
             newItem = privadoOPublico + ' Decimal ' + newItem + getAnSetAPoner
             text.value += newItem
             break;
-          case 'int':
-            newItem = privadoOPublico + ' Int ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
           case 'text':
             newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
             text.value += newItem
@@ -77,8 +73,9 @@ function App() {
             newItem = privadoOPublico + ' Int ' + newItem + getAnSetAPoner
             text.value += newItem
             break;
-          
-        }
+          default:
+            break;        
+          }
       }
     })
   }
