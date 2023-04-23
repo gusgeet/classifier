@@ -28,11 +28,12 @@ function App() {
         } else {
           newItem += item
         }
-        newItem2 = newItem.replace('identity', '').split('\t')[1]
-        if(newItem2.includes('('))
+        newItem2 = newItem.replace('identity', '').split('\t')[1].replace(' ', '')
+        if(newItem2.includes('(')) {
           newItem2 = newItem2.split('(')[0]
+
+        }
         newItem = newItem.split('\t')[0]
-        
         switch(newItem2) {
           case 'int':
             newItem = privadoOPublico + ' int ' + newItem + getAnSetAPoner
