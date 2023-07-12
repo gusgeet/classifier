@@ -79,6 +79,10 @@ function App() {
             newItem = privadoOPublico + ' TimeSpan ' + newItem + getAnSetAPoner
             text.value += newItem
             break;
+            case 'datetime':
+              newItem = privadoOPublico + ' DateTime ' + newItem + getAnSetAPoner
+              text.value += newItem
+              break;
           default:
             break;        
           }
