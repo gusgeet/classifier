@@ -22,18 +22,22 @@ function App() {
         text.value = ''
       for(let item of data){
         var newItem = ''
-        var newItem2 = ''
+        var newItem2 = item.split('\t')[1].split(' ')[0]
         if(item.includes('_') && isChecked){
-          newItem += item.replaceAll('_', '').replace('identity', '')
+          let itemSplitted = item.split('\t')
+          let formatteditem = itemSplitted[0].split('_')
+          for(var a = 0;a < formatteditem.length;a++){
+            newItem += formatteditem[a].substring(0, 1).toUpperCase() + formatteditem[a].substring(1)
+          }
+
         } else {
-          newItem += item
+          newItem += item.split('\t')[0]
         }
-        newItem2 = newItem.replace('identity', '').split('\t')[1].replace(' ', '')
         if(newItem2.includes('(')) {
           newItem2 = newItem2.split('(')[0]
 
         }
-        newItem = newItem.split('\t')[0]
+        
         switch(newItem2) {
           case 'int':
             newItem = privadoOPublico + ' int ' + newItem + getAnSetAPoner
@@ -59,6 +63,10 @@ function App() {
             newItem = privadoOPublico + ' byte[] ' + newItem + getAnSetAPoner
             text.value += newItem
             break;
+          case 'varbinary':
+              newItem = privadoOPublico + ' byte[] ' + newItem + getAnSetAPoner
+              text.value += newItem
+              break;
           case 'decimal':
             newItem = privadoOPublico + ' Decimal ' + newItem + getAnSetAPoner
             text.value += newItem
@@ -72,14 +80,14 @@ function App() {
             text.value += newItem
             break;
           case 'smallint':
-            newItem = privadoOPublico + ' Int ' + newItem + getAnSetAPoner
+            newItem = privadoOPublico + ' int ' + newItem + getAnSetAPoner
             text.value += newItem
             break;
           case 'time':
             newItem = privadoOPublico + ' TimeSpan ' + newItem + getAnSetAPoner
             text.value += newItem
             break;
-            case 'datetime':
+          case 'datetime':
               newItem = privadoOPublico + ' DateTime ' + newItem + getAnSetAPoner
               text.value += newItem
               break;
