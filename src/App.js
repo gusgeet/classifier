@@ -79,6 +79,10 @@ function App() {
             newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
             text.value += newItem
             break;
+            case 'ntext':
+              newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
+              text.value += newItem
+              break;
           case 'smallint':
             newItem = privadoOPublico + ' int ' + newItem + getAnSetAPoner
             text.value += newItem
