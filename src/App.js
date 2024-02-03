@@ -1,105 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
+import { procesarData } from './Logic';
+import { ESP, ENG } from './data';
+import flag1 from "./asserts/svg/england.svg"
+import flag2 from "./asserts/svg/spain.svg"
 
 
 function App() {
+
+  const [translate, setTranslate] = useState(false)
+  const [translation, setTranslation] = useState([])
+
   const [isChecked, setIsChecked] = useState(false)
   const [isAppend, setIsAppend] = useState(false)
+  const [toClipboard, setToClipboard] = useState(false)
+
+  useEffect(() => {
+    setTranslation(ESP)
+  },[])
+  
+  const changeTranslation = () => {
+    setTranslate(!translate)
+    !translate ? setTranslation(ENG) : setTranslation(ESP)
+  }
   
   const readContent = () => {
     navigator.clipboard.readText().then((data) => {
-      data = data.replace(/[\r\n]/gm, '|')
-      data = data.split('|').join()
-      data = data.split(',,')
-      
-      const getters = document.getElementById('getter').value
-      const toAppend = isAppend
-      const getAnSetAPoner = getters === "1" ? ' {get;} \n' : getters === "2" ? ' {set;} \n' : ' {get; set;} \n'
-      const selection = document.getElementById('select').value
-      const privadoOPublico = selection === "1" ? 'public' : 'private'
-      const text = document.getElementById('text-holder')
-      if(text.value && !toAppend) 
-        text.value = ''
-      for(let item of data){
-        var newItem = ''
-        var newItem2 = item.split('\t')[1].split(' ')[0]
-        if(item.includes('_') && isChecked){
-          let itemSplitted = item.split('\t')
-          let formatteditem = itemSplitted[0].split('_')
-          for(var a = 0;a < formatteditem.length;a++){
-            newItem += formatteditem[a].substring(0, 1).toUpperCase() + formatteditem[a].substring(1)
-          }
-
-        } else {
-          newItem += item.split('\t')[0]
-        }
-        if(newItem2.includes('(')) {
-          newItem2 = newItem2.split('(')[0]
-
-        }
-        
-        switch(newItem2) {
-          case 'int':
-            newItem = privadoOPublico + ' int ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'bigint':
-              newItem = privadoOPublico + ' Int64 ' + newItem + getAnSetAPoner
-              text.value += newItem
-              break;
-          case 'bit':
-            newItem = privadoOPublico + ' bool ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'date':
-            newItem = privadoOPublico + ' DateTime ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'varchar':
-            newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'image':
-            newItem = privadoOPublico + ' byte[] ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'varbinary':
-              newItem = privadoOPublico + ' byte[] ' + newItem + getAnSetAPoner
-              text.value += newItem
-              break;
-          case 'decimal':
-            newItem = privadoOPublico + ' Decimal ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'text':
-            newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'nvarchar':
-            newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-            case 'ntext':
-              newItem = privadoOPublico + ' String ' + newItem + getAnSetAPoner
-              text.value += newItem
-              break;
-          case 'smallint':
-            newItem = privadoOPublico + ' int ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'time':
-            newItem = privadoOPublico + ' TimeSpan ' + newItem + getAnSetAPoner
-            text.value += newItem
-            break;
-          case 'datetime':
-              newItem = privadoOPublico + ' DateTime ' + newItem + getAnSetAPoner
-              text.value += newItem
-              break;
-          default:
-            break;        
-          }
+      try {
+        procesarData(data, isAppend, isChecked, toClipboard)
+      } catch(err) {
+       document.getElementById('text-holder').placeholder = 'Error en consistencia de datos: Verifique que los datos copiados sean los correctos.'
       }
-    })
+      }
+    )
   }
 
   const handleCheckbox = (e) => {
@@ -110,50 +43,83 @@ function App() {
     setIsAppend(e.target.checked)
   }
 
+  const handleToClipboard = (e) => {
+    setToClipboard(e.target.checked)
+  }
+ 
   return (
     <div className="App">
-      <header className="App-header">
+      <header>
+        <img alt='Español' src={flag2}/>
+        <div className="checkbox-wrapper-6">
+          <input className="tgl tgl-light" id="cb1-6" type="checkbox" onChange={() => changeTranslation()}/>
+          <label className="tgl-btn" htmlFor="cb1-6"></label>
+        </div>
+        <img alt='Español' src={flag1}/>
+      </header>
+      <section className="App-header">
         <h2>Classifier</h2>
         <h2>Classifier</h2>
         <textarea readOnly 
-          id='text-holder'></textarea>
-        <div className='box-checks'>
-          <h6 htmlFor='conversion'> 
-            <input 
-              id='conversion' 
-              type='checkbox'
-              checked={isChecked}
-              onChange={handleCheckbox}
-              />
-            Remover guiones
-          </h6>
-          <h6 htmlFor='append'>
-            <input 
-              id='append'
-              type='checkbox'
-              checked={isAppend}
-              onChange={handleAppend}
-            />
-            Apendar al texto existente
-          </h6>
+          id='text-holder'
+          placeholder={translation[0]}>
+        </textarea>
+        <div id='controls'>
+          <div className='class-name'>
+            <h6 htmlFor="class-name">{translation[4]}:</h6>
+            <input id='class-name' type="text"/>
+          </div>
+          <div className='type'>
+            <h6>{translation[3]}:</h6>
+            <select id='select'>
+              <option value='0'>Private</option>
+              <option value='1'>Public</option>
+            </select>
+          </div>
+          <div className='type'>
+            <h6>Getter/Setter:</h6>
+            <select id='getter'>
+              <option value='0'>{translation[6]}</option>
+              <option value='1'>{translation[7]}</option>
+              <option value='2'>{translation[8]}</option>
+            </select>
+          </div>
+          <div className='box-checks'>
+            <div>
+              <h6 htmlFor='conversion'> 
+                {translation[1]}
+              </h6>
+              <input 
+                  id='conversion' 
+                  type='checkbox'
+                  checked={isChecked}
+                  onChange={handleCheckbox}
+                  />
+            </div>
+            <div>
+              <h6 htmlFor='append'>
+                {translation[2]}
+              </h6>
+              <input 
+                  id='append'
+                  type='checkbox'
+                  checked={isAppend}
+                  onChange={handleAppend}
+                />
+            </div>
+            <div>
+            <h6 htmlFor="copy-result">{translation[9]}</h6>
+                <input 
+                id='copy-result' 
+                type="checkbox"
+                checked={toClipboard}
+                onChange={handleToClipboard}
+                />
+            </div>
+          </div>
         </div>
-        <div className='type'>
-          <h6>Tipo de clase:</h6>
-          <select id='select'>
-            <option value='0'>Private</option>
-            <option value='1'>Public</option>
-          </select>
-        </div>
-        <div className='type'>
-          <h6>Getter/Setter:</h6>
-          <select id='getter'>
-            <option value='0'>Ambos</option>
-            <option value='1'>Solo getter</option>
-            <option value='2'>Solo setter</option>
-          </select>
-        </div>
-        <button onClick={readContent} className='btn'>Obtener datos de portapapeles</button>
-      </header>
+        <button onClick={readContent} className='btn'>{translation[5]}</button>
+      </section>
     </div>
   );
 }
