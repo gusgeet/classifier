@@ -18,5 +18,6 @@ Instrucciones:
 
 •Presione "Obtener datos de portapapeles"
 
-##NOTA: La aplicación le solicitará permiso para acceder a la información de su portapapeles.
+## NOTA: 
+La aplicación le solicitará permiso para acceder a la información de su portapapeles.
 
