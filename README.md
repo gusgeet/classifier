@@ -1,20 +1,14 @@
-## Por qué usar EF Core -> Dapper
+## Classifier
 
-Si trabajas con EF Core y Dapper, habrás notado que EF Core le saca el guion a las columnas transcriptas a clases
-luego de ejecutar DB-Scaffolding. Razon por la cual, si pasas a Dapper, el Select a armar para traer los datos
-si se utiliza una columna que tiene guion bajo, tiene que incluir una conversion, dado que la clase no tiene el guion bajo. Ej: si la columna se llama "dias_nublados", esa parte del select tendria que ser "dias_nublados as diasnublados".
+Herramienta para generar clases de C# basadas en tablas de SQL.
 
-Esta herramienta arma la estructura de la query con esa conversion, obteniendo todos los nombres de las columnas y detectando si tienen guion bajo, agregando la conversion.
+Instrucciones:
+•Ejecutar el store exec sp_columns '[NOMBRE DE_LA_TABLA]'. Ejemplo: exec sp_columns 'Clientes'
+•Reacomodar la tabla TYPE_NAME a la derecha de la columna COLUMN_NAME
+•Copiar los datos que requiera utilizar en la clase:
+![image](https://github.com/gusgeet/classifier/assets/88063887/29ba9df7-2546-411f-9e82-6ba5aae54760)
+•Ingrese a Classifier y setee las opciones segun su necesidad.
+•Presione "Obtener datos de portapapeles"
 
-# Instrucciones de como trabajar con EF Core -> Dapper
-
-1- Ir a SSMS. Ejecutar el store procedure:
-    exec sp_columns 'nombre de tabla'
-Esto va a devolver las columnas pertenecientes en la tabla especificada.
-
-2-Copiar el nombre de las columnas a solicitar.
-
-3-Ir a la pagina, y tocar el unico boton que tiene.
-
-En el textarea de la pagina, se va a mostrar el resultado de la estructura del select, con esos campos, y las conversiones segun corresponda.
+#NOTA: La aplicación le solicitará permiso para acceder a la información de su portapapeles.
 
